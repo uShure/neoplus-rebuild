@@ -1,0 +1,92 @@
+---
+import {
+  contacts, PHONE_MAIN, PHONE_MAIN_TEL, PHONE_MOBILE, PHONE_MOBILE_TEL, EMAIL_MAIN, telHref,
+} from "../lib";
+
+const year = new Date().getFullYear();
+const topServices = [
+  ["/narcologicheskaya-pomosch/", "Наркологическая помощь"],
+  ["/lechenie-alkogolizma/", "Лечение алкоголизма"],
+  ["/anonimnoe-lechenie-narkomanii/", "Лечение наркомании"],
+  ["/reabilitatsionniy-center/", "Реабилитационный центр"],
+  ["/kapelnitsa-ot-pohmelya/", "Капельница от похмелья"],
+  ["/narcolog-na-dom/", "Нарколог на дом"],
+  ["/vyvod-iz-zapoya/", "Вывод из запоя"],
+  ["/ubod/", "УБОД"],
+  ["/detoksikatsiya-ot-narkotikov/", "Детоксикация от наркотиков"],
+  ["/kodirovanie-ot-alkogolizma/", "Кодирование от алкоголизма"],
+  ["/snyatie-lomki/", "Снятие ломки"],
+  ["/psihiatricheskaya-klinika/", "Психиатрия"],
+];
+const info = [
+  ["/o-klinike-neoplus/", "О клинике"],
+  ["/tseny/", "Цены"],
+  ["/otzyvy/", "Отзывы"],
+  ["/litsenzii/", "Лицензии"],
+  ["/personal/", "Врачи"],
+  ["/kontakty/", "Контакты"],
+];
+const legal = [
+  ["/politika-konfidentsialnosti/", "Политика конфиденциальности"],
+  ["/politika-v-otnoshenii-obrabotki-i-zaschity-personalnyh-dannyh/", "Политика обработки ПД"],
+  ["/soglasie-na-obrabotku-personalnyh-dannyh/", "Согласие на обработку ПД"],
+  ["/soglashenie-ob-ispolzovanii-sayta/", "Соглашение об использовании сайта"],
+  ["/yuridicheskaya-informatsiya/", "Юридическая информация"],
+];
+---
+
+<footer class="mt-16 bg-brand-800 text-white/90">
+  <div class="container-x grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <img src="/img/logo-white.svg" alt="Балашихинский наркологический центр" width="256" height="56" class="mb-4 h-10 w-auto" loading="lazy" />
+      <p class="text-[15px] leading-relaxed text-white/70">
+        Наркологическая помощь в Балашихе. Анонимно, круглосуточно, 24/7.
+      </p>
+    </div>
+
+    <nav aria-label="Услуги">
+      <h3 class="mb-3 text-[15px] font-semibold text-white">Услуги</h3>
+      <ul class="grid gap-1.5 text-[14px]">
+        {topServices.map(([href, label]) => (
+          <li><a class="text-white/75 hover:text-white" href={href}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label="Информация">
+      <h3 class="mb-3 text-[15px] font-semibold text-white">Клиника</h3>
+      <ul class="grid gap-1.5 text-[14px]">
+        {info.map(([href, label]) => (
+          <li><a class="text-white/75 hover:text-white" href={href}>{label}</a></li>
+        ))}
+      </ul>
+      <h3 class="mb-3 mt-6 text-[15px] font-semibold text-white">Документы</h3>
+      <ul class="grid gap-1.5 text-[14px]">
+        {legal.map(([href, label]) => (
+          <li><a class="text-white/75 hover:text-white" href={href}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div>
+      <h3 class="mb-3 text-[15px] font-semibold text-white">Контакты</h3>
+      <ul class="grid gap-2 text-[15px]">
+        <li><a class="font-semibold text-white hover:underline" href={telHref(PHONE_MAIN)}>{PHONE_MAIN}</a> <span class="text-white/60">— бесплатно по РФ</span></li>
+        <li><a class="text-white/75 hover:text-white" href={telHref(PHONE_MOBILE)}>{PHONE_MOBILE}</a></li>
+        <li><a class="text-white/75 hover:text-white" href={"mailto:" + EMAIL_MAIN}>{EMAIL_MAIN}</a></li>
+        <li class="text-white/75">Колл-центр: {contacts.address_contact_center}</li>
+      </ul>
+      <div class="mt-4 rounded-lg bg-white/5 p-3 text-[13px] leading-relaxed text-white/70">
+        <p>{contacts.legal_entity} · ИНН {contacts.inn} · ОГРН {contacts.ogrn}</p>
+        <p class="mt-1">Лицензия {contacts.license_main.number} от {contacts.license_main.date}</p>
+        <p class="mt-1">Медицинские услуги оказываются по адресу: {contacts.license_main.address}</p>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="container-x flex flex-col gap-2 py-5 text-[13px] text-white/60 md:flex-row md:items-center md:justify-between">
+      <p>© {year} Балашихинский наркологический центр</p>
+      <p>Стационарные услуги — партнёр {contacts.license_stacionar_partner.entity}, лиц. {contacts.license_stacionar_partner.number}</p>
+    </div>
+  </div>
+</footer>

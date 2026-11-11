@@ -1,0 +1,374 @@
+---
+import Base from "../layouts/Base.astro";
+import Faq from "../components/Faq.astro";
+import LeadForm from "../components/LeadForm.astro";
+import DoctorCard from "../components/DoctorCard.astro";
+import PriceTable from "../components/PriceTable.astro";
+import {
+  services, doctors, reviews, promos, faqGroups, priceGroups,
+  PHONE_MAIN, shortServiceName, directions, servicePriceText,
+} from "../lib";
+
+const title = "Балашихинский наркологический центр — анонимная помощь 24/7";
+const description =
+  "Балашихинский наркологический центр: вывод из запоя, капельницы, кодирование, реабилитация и психиатрия. Выезд врача по Балашихе и округе, анонимно, круглосуточно. +7 (800) 200-24-46";
+
+const dirs = directions();
+const topPrices = priceGroups[0]?.items.slice(0, 8) ?? [];
+const homeFaq = faqGroups[0]?.items.slice(0, 5) ?? [];
+
+const advantages = [
+  {
+    t: "Анонимно и конфиденциально",
+    d: "Данные не передаются третьим лицам, учётом на работу не грозит.",
+  },
+  {
+    t: "Выезд на дом и в клинику",
+    d: "Мобильные бригады по Балашихе и округе круглосуточно, включая праздники.",
+  },
+  {
+    t: "Лицензированная медицина",
+    d: "Лицензия Л041-01021-66/01009753 от 28.12.2023. Работаем по клиническим протоколам.",
+  },
+  {
+    t: "Сопровождение семьи",
+    d: "Консультации для родственников, мотивация на лечение и помощь с госпитализацией.",
+  },
+];
+---
+
+<Base title={title} description={description} path="/">
+  <!-- HERO -->
+  <section class="hero-pan bg-brand-800 bg-[linear-gradient(160deg,#123a66_0%,#1d5fa9_55%,#4a8cc7_100%)] text-white">
+    <div class="container-x grid items-start gap-10 py-14 lg:grid-cols-[1fr_360px] lg:py-20">
+      <div>
+        <p class="anim-pop mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[14px] font-medium" style="animation-delay:.05s">
+          <span class="h-2 w-2 rounded-full bg-accent-500" aria-hidden="true"></span>
+          Работаем 24/7, включая праздники и выходные
+        </p>
+        <h1 class="max-w-2xl text-[33px] leading-tight md:text-[48px]">
+          Наркологическая помощь в Балашихе — анонимно и круглосуточно
+        </h1>
+        <p class="anim-pop mt-4 max-w-xl text-[17px] leading-relaxed text-white/80 md:text-[19px]" style="animation-delay:.2s">
+          Балашихинский наркологический центр: вывод из запоя и детоксикация на дому и в стационаре, кодирование,
+          реабилитация и психиатрия. Мобильные бригады выезжают круглосуточно.
+        </p>
+        <div class="anim-pop mt-8 flex flex-wrap gap-3" style="animation-delay:.3s">
+          <a href="tel:+78002002446" class="btn-accent !px-8 !py-3.5 text-[17px]">Вызвать врача</a>
+          <button data-open-modal class="btn !border !border-white/40 !bg-white/10 !text-white hover:!bg-white/20">
+            Бесплатная консультация
+          </button>
+        </div>
+        <p class="mt-5 text-[13px] text-white/60">
+          Лицензия Л041-01021-66/01009753 от 28.12.2023
+        </p>
+      </div>
+      <aside class="anim-pop rounded-2xl bg-white p-6 text-ink-900 shadow-[0_16px_40px_rgb(6_20_40/0.35)]" style="animation-delay:.35s">
+        <h2 class="text-[20px]">Записаться на приём</h2>
+        <p class="mb-4 mt-1 text-[14px] text-ink-600">Перезвоним за несколько минут.</p>
+        <LeadForm source="home-hero" compact heading="" />
+      </aside>
+    </div>
+  </section>
+
+  <!-- НАПРАВЛЕНИЯ: поиск + категории + плитки с ценами -->
+  <section class="container-x py-12" aria-labelledby="dirs">
+    <h2 id="dirs" class="mb-2 text-[28px] md:text-[33px]">Направления лечения</h2>
+    <p class="mb-6 max-w-2xl text-ink-600">
+      Все {services.length} услуг с ценами. Найдите нужную поиском или выберите направление —
+      запись в один клик с любой плитки.
+    </p>
+
+    <div class="dir-toolbar sticky top-16 z-30 -mx-4 bg-white/95 px-4 py-3 backdrop-blur md:mx-0 md:rounded-xl md:border md:border-line-200 md:px-4">
+      <div class="relative">
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <label class="sr-only" for="dir-search">Поиск по услугам</label>
+        <input
+          id="dir-search"
+          type="search"
+          placeholder="Найти услугу: капельница, кодирование, психиатр…"
+          autocomplete="off"
+          class="w-full rounded-xl border border-line-200 py-2.5 pl-11 pr-4 text-[16px] focus:border-brand-600 focus:outline-2 focus:outline-brand-600/40"
+        />
+      </div>
+      <div class="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="group" aria-label="Фильтр по направлениям">
+        <button type="button" class="dir-chip whitespace-nowrap rounded-full border px-4 py-1.5 text-[14px] font-medium transition-colors" data-dir="Все" aria-pressed="true">
+          Все <span class="text-ink-400">{services.length}</span>
+        </button>
+        {dirs.map((d) => (
+          <button type="button" class="dir-chip whitespace-nowrap rounded-full border px-4 py-1.5 text-[14px] font-medium transition-colors" data-dir={d.name} aria-pressed="false">
+            {d.name} <span class="text-ink-400">{d.services.length}</span>
+          </button>
+        ))}
+      </div>
+      <p id="dir-count" class="mt-2 hidden text-[13px] text-ink-600 md:text-right" aria-live="polite"></p>
+    </div>
+
+    <div id="dir-groups" class="mt-6 grid gap-8">
+      {dirs.map((d) => (
+        <div class="dir-group" data-dir={d.name}>
+          <div class="mb-2 flex items-center justify-between gap-3 border-b border-line-200 pb-2">
+            <h3 class="text-[17px] md:text-[18px]">
+              {d.name}
+              <span class="text-[14px] font-normal text-ink-400">· {d.services.length}</span>
+            </h3>
+            <button type="button" class="dir-toggle text-[13px] font-medium text-brand-600 hover:underline" hidden>
+              Показать все
+            </button>
+          </div>
+          <div class="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+            {d.services.map((s, si) => {
+              const price = servicePriceText(s);
+              const name = shortServiceName(s.h1);
+              return (
+                <div
+                  class="dir-tile group relative flex min-w-0 items-center gap-2 border-b border-line-200/60 px-1 py-1.5 transition-colors duration-100 hover:bg-brand-50/60"
+                  data-name={(s.h1 + " " + s.path).toLowerCase()}
+                  data-dir={d.name}
+                >
+                  <a
+                    href={"/" + s.path + "/"}
+                    title={name}
+                    class="relative z-10 flex min-w-0 flex-1 items-baseline justify-between gap-3 after:absolute after:inset-0 after:content-['']"
+                  >
+                    <span class="truncate text-[14px] text-ink-900 group-hover:text-brand-700">{name}</span>
+                    {price && <span class="shrink-0 text-[13px] font-semibold text-brand-600">{price}</span>}
+                  </a>
+                  <button
+                    type="button"
+                    data-open-modal
+                    data-service={name}
+                    class="relative z-20 hidden h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line-200 text-brand-700 transition-colors hover:border-brand-600 hover:bg-white group-hover:flex sm:flex"
+                    aria-label={"Записаться: " + name}
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      <div id="dir-empty" class="hidden rounded-xl border border-dashed border-line-200 p-8 text-center">
+        <p class="text-[17px] font-semibold">Не нашли подходящую услугу?</p>
+        <p class="mx-auto mt-1 max-w-md text-[15px] text-ink-600">
+          Позвоните — координатор выслушает и подберёт необходимую помощь. Анонимно, круглосуточно.
+        </p>
+        <a href="tel:+78002002446" class="btn-primary mt-5">+7 (800) 200-24-46</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЦЕНЫ -->
+  <section class="bg-brand-50 py-14" aria-labelledby="prices">
+    <div class="container-x">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 id="prices" class="text-[28px] md:text-[33px]">Цены на основные услуги</h2>
+          <p class="mt-1 text-ink-600">Полный прайс — на странице <a class="text-brand-600 underline" href="/tseny/">цен</a>. Скидка 10% при заказе через форму на сайте.</p>
+        </div>
+        <a href="/tseny/" class="btn-primary">Смотреть все цены</a>
+      </div>
+      <PriceTable rows={topPrices} id="home-prices" />
+    </div>
+  </section>
+
+  <!-- ПРЕИМУЩЕСТВА -->
+  <section class="container-x py-14" aria-labelledby="why">
+    <h2 id="why" class="mb-8 text-[28px] md:text-[33px]">Почему обращаются к нам</h2>
+    <div class="grid gap-4 md:grid-cols-2">
+      {advantages.map((a, ai) => (
+        <div class="card hover-lift flex gap-4 p-6" data-reveal={ai % 2 === 0 ? "left" : "right"}>
+          <svg class="mt-1 h-8 w-8 shrink-0 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          <div>
+            <h3 class="text-[17px]">{a.t}</h3>
+            <p class="mt-1 text-[15px] leading-relaxed text-ink-600">{a.d}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ВРАЧИ -->
+  <section class="bg-brand-50 py-14" aria-labelledby="doctors">
+    <div class="container-x">
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="doctors" class="text-[28px] md:text-[33px]">Врачи клиники</h2>
+        <a href="/personal/" class="btn-secondary">Все врачи</a>
+      </div>
+      <div class="relative" data-carousel>
+    <button data-carousel-prev aria-label="Предыдущий" class="absolute left-2 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line-200 bg-white text-brand-800 shadow-[0_6px_20px_rgb(16_24_40/0.16)] transition-colors hover:bg-brand-50 md:flex">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button data-carousel-next aria-label="Следующий" class="absolute right-2 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line-200 bg-white text-brand-800 shadow-[0_6px_20px_rgb(16_24_40/0.16)] transition-colors hover:bg-brand-50 md:flex">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>        <div class="carousel-track flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2" data-carousel-track>
+          {doctors.map((d) => (
+            <div class="w-[228px] shrink-0 snap-start sm:w-[256px]">
+              <DoctorCard doctor={d} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- АКЦИИ -->
+  {promos.length > 0 && (
+    <section class="container-x py-14" aria-labelledby="promos">
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="promos" class="text-[28px] md:text-[33px]">Акции и скидки</h2>
+        <a href="/aktsii/" class="btn-secondary">Все акции</a>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {promos.slice(0, 3).map((p) => (
+          <div class="card hover-lift flex flex-col p-6">
+            <h3 class="text-[18px] leading-snug">{p.title}</h3>
+            <p class="mt-2 flex-1 text-[15px] text-ink-600">{p.text}</p>
+            <button data-open-modal class="btn-secondary mt-4 self-start">Получить скидку</button>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- ОТЗЫВЫ -->
+  <section class="bg-brand-50 py-14" aria-labelledby="reviews">
+    <div class="container-x">
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="reviews" class="text-[28px] md:text-[33px]">Отзывы пациентов и близких</h2>
+        <a href="/otzyvy/" class="btn-secondary">Все {reviews.length} отзывов</a>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+        {reviews.slice(0, 6).map((r) => (
+          <figure class="card hover-lift flex flex-col p-6">
+            <blockquote class="flex-1 text-[15px] leading-relaxed text-ink-900/90">
+              «{r.text.slice(0, 260)}{r.text.length > 260 ? "…" : ""}»
+            </blockquote>
+            <figcaption class="mt-4 text-[14px] text-ink-600">
+              <span class="font-semibold text-ink-900">{r.author}</span>
+              {r.age && `, ${r.age}`}
+              <span class="ml-1 text-ink-400">— ПроДокторов</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="container-x py-14" aria-labelledby="faq">
+    <div class="mx-auto max-w-3xl">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="faq" class="text-[28px] md:text-[33px]">Частые вопросы</h2>
+        <a href="/faq/" class="btn-secondary">Все вопросы</a>
+      </div>
+      <Faq items={homeFaq} />
+    </div>
+  </section>
+
+  <!-- ЗАПИСЬ -->
+  <section id="zapis" class="bg-brand-800 py-14 text-white scroll-mt-24">
+    <div class="container-x grid items-start gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="text-[28px] md:text-[33px]">Получить помощь сейчас</h2>
+        <p class="mt-3 max-w-lg text-[16px] leading-relaxed text-white/80">
+          Оставьте телефон — координатор перезвонит, ответит на вопросы и подберёт врача.
+          Консультация бесплатна и анонимна.
+        </p>
+        <ul class="mt-6 grid gap-2 text-[15px] text-white/80">
+          <li>— Выезд врача на дом и в стационар по Балашихе и округе</li>
+          <li>— Возможен выезд на дом и госпитализация в стационар</li>
+          <li>— Скидка 10% при заказе через форму на сайте</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl bg-white p-6 text-ink-900 md:p-8">
+        <LeadForm source="home-form" heading="" />
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Каталог направлений: поиск + фильтр по категориям + «Показать все»
+    const chips = Array.from(document.querySelectorAll(".dir-chip"));
+    const search = document.getElementById("dir-search");
+    const groups = Array.from(document.querySelectorAll(".dir-group"));
+    const tiles = Array.from(document.querySelectorAll(".dir-tile"));
+    const empty = document.getElementById("dir-empty");
+    const counter = document.getElementById("dir-count");
+    const COLLAPSE = 6;
+
+    const norm = (s) => (s || "").toLowerCase().replace(/ё/g, "е");
+    const chipOn = "border-brand-600 bg-brand-600 text-white";
+    const chipOff = "border-line-200 bg-white text-ink-900 hover:border-brand-600/60";
+
+    let activeDir = "Все";
+    for (const c of chips) {
+      c.classList.add(...chipOff.split(" "));
+      if (c.dataset.dir === activeDir) {
+        c.classList.remove(...chipOff.split(" "));
+        c.classList.add(...chipOn.split(" "));
+      }
+    }
+
+    function apply() {
+      const q = norm(search ? search.value : "");
+      const filtering = q !== "" || activeDir !== "Все";
+      let shown = 0;
+      for (const g of groups) {
+        const gTiles = Array.from(g.querySelectorAll(".dir-tile"));
+        const expanded = g.dataset.expanded === "1";
+        let gVisible = 0;
+        gTiles.forEach((tile, i) => {
+          const ok =
+            (!q || norm(tile.dataset.name + " " + (tile.dataset.dir || "")).includes(q)) &&
+            (activeDir === "Все" || g.dataset.dir === activeDir);
+          const capped = !filtering && !expanded && i >= COLLAPSE;
+          const vis = ok && !capped;
+          tile.classList.toggle("hidden", !vis);
+          if (ok) gVisible++;
+          if (vis) shown++;
+        });
+        g.hidden = gVisible === 0;
+        const toggle = g.querySelector(".dir-toggle");
+        const extras = gTiles.length - Math.min(COLLAPSE, gTiles.length);
+        if (toggle) {
+          toggle.hidden = filtering || expanded || gTiles.length <= COLLAPSE || g.hidden;
+          toggle.textContent = expanded
+            ? "Свернуть"
+            : "Показать все " + gTiles.length;
+        }
+      }
+      if (empty) empty.classList.toggle("hidden", shown !== 0);
+      if (counter) {
+        counter.classList.toggle("hidden", !filtering);
+        counter.textContent = "Найдено услуг: " + shown;
+      }
+    }
+
+    for (const ch of chips) {
+      ch.addEventListener("click", () => {
+        activeDir = ch.dataset.dir || "Все";
+        for (const c of chips) {
+          const on = c === ch;
+          c.setAttribute("aria-pressed", String(on));
+          c.classList.remove(...chipOn.split(" "), ...chipOff.split(" "));
+          c.classList.add(...(on ? chipOn : chipOff).split(" "));
+        }
+        apply();
+      });
+    }
+    search?.addEventListener("input", apply);
+
+    for (const g of groups) {
+      const toggle = g.querySelector(".dir-toggle");
+      toggle?.addEventListener("click", () => {
+        g.dataset.expanded = g.dataset.expanded === "1" ? "0" : "1";
+        apply();
+      });
+    }
+
+    apply();
+  </script>
+</Base>

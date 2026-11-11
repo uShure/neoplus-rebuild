@@ -1,0 +1,86 @@
+---
+import type { PriceRow } from "../lib";
+
+interface Props {
+  rows: PriceRow[];
+  header?: string[] | null;
+  /** show search box */
+  searchable?: boolean;
+  id?: string;
+}
+const { rows, header, searchable = false, id = "prices" } = Astro.props;
+const hasTerm = rows.some((r) => r.term);
+const hasDesc = rows.some((r) => r.desc);
+---
+
+{searchable && (
+  <div class="mb-4">
+    <label class="sr-only" for={id + "-search"}>Поиск по услугам</label>
+    <input
+      id={id + "-search"}
+      type="search"
+      class="w-full max-w-md rounded-lg border border-line-200 px-4 py-2.5 text-[15px] focus:border-brand-600 focus:outline-2 focus:outline-brand-600/40"
+      placeholder="Поиск по прайсу…"
+      data-price-search={id}
+    />
+  </div>
+)}
+
+<!-- мобильные карточки строк -->
+<div class="grid gap-2.5 md:hidden" data-price-cards={id}>
+  {rows.map((r) => (
+    <div class="card p-4">
+      <p class="font-medium leading-snug">{r.name}</p>
+      <div class="mt-2.5 flex items-center justify-between gap-3">
+        <span class="font-semibold whitespace-nowrap text-brand-700">{r.price ?? "бесплатно"}</span>
+        <button class="btn-secondary whitespace-nowrap !px-4 !py-2 text-[14px]" data-open-modal>Записаться</button>
+      </div>
+    </div>
+  ))}
+</div>
+
+<!-- таблица: планшет и десктоп -->
+<div class="hidden overflow-x-auto rounded-xl border border-line-200 md:block">
+  <table class="w-full md:min-w-[640px] border-collapse text-left text-[15px]" data-price-table={id}>
+    <thead>
+      <tr class="border-b border-line-200 bg-brand-50">
+        <th scope="col" class="px-4 py-3 font-semibold">Наименование услуги</th>
+        {hasDesc && <th scope="col" class="px-4 py-3 font-semibold">Описание</th>}
+        {hasTerm && <th scope="col" class="px-4 py-3 font-semibold">Сроки</th>}
+        <th scope="col" class="whitespace-nowrap px-4 py-3 text-right font-semibold">Цена</th>
+        <th scope="col" class="px-4 py-3"><span class="sr-only">Действие</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr class="border-b border-line-200/70 last:border-0 hover:bg-brand-50/40">
+          <td class="px-4 py-3 font-medium">{r.name}</td>
+          {hasDesc && <td class="px-4 py-3 text-ink-600">{r.desc ?? "—"}</td>}
+          {hasTerm && <td class="whitespace-nowrap px-4 py-3 text-ink-600">{r.term ?? "—"}</td>}
+          <td class="whitespace-nowrap px-4 py-3 text-right font-semibold text-brand-700">{r.price ?? "бесплатно"}</td>
+          <td class="px-4 py-3 text-right">
+            <button class="btn-secondary whitespace-nowrap !px-4 !py-1.5 text-[14px]" data-open-modal>Записаться</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.querySelectorAll("[data-price-search]").forEach((input) => {
+    const id = (input as HTMLElement).dataset.priceSearch;
+    const table = document.querySelector(`[data-price-table="${id}"]`);
+    const cards = document.querySelector(`[data-price-cards="${id}"]`);
+    input?.addEventListener("input", (e) => {
+      const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      const match = (el: HTMLElement) => el.textContent!.toLowerCase().includes(q);
+      table?.querySelectorAll("tbody tr").forEach((tr) => {
+        (tr as HTMLElement).style.display = match(tr as HTMLElement) ? "" : "none";
+      });
+      cards?.querySelectorAll(":scope > div").forEach((card) => {
+        (card as HTMLElement).style.display = match(card as HTMLElement) ? "" : "none";
+      });
+    });
+  });
+</script>

@@ -1,0 +1,31 @@
+{
+ "source": "https://balashikha.neoplus-clinic.ru/aktsii/",
+ "count": 5,
+ "items": [
+  {
+   "title": "Кодирование от алкоголизма со скидкой до 2 000 ₽",
+   "text": "При заказе услуги вывод из запоя на дом или в клинике, вы можете получить скидку на услугу кодирование инъекционным способом или на вшивание от алкоголизма до 2 000 ₽",
+   "image": "/netcat_template/neoplus-clinic/vrach-obsuzhdaet-plan-lecheniya-s-patsientom.jpg"
+  },
+  {
+   "title": "Скидка 20% на детоксикацию от алкоголя",
+   "text": "Скидка 20% действует на услугу медицинской детоксикации при алкогольной интоксикации.",
+   "image": "/netcat_template/neoplus-clinic/uslugi/vyvod-iz-zapoya-2.webp"
+  },
+  {
+   "title": "Скидка 15% на консультацию нарколога",
+   "text": "Запишитесь на консультацию врача-нарколога со скидкой 15%.",
+   "image": "/netcat_template/neoplus-clinic/uslugi/konsultatsiya-narkologa.webp"
+  },
+  {
+   "title": "Скидка 15% на помощь после длительного запоя",
+   "text": "Получите скидку 15% на первичное обращение за медицинской помощью после продолжительного употребления алкоголя.",
+   "image": "/netcat_template/neoplus-clinic/uslugi/vyvod-iz-zapoya-2.webp"
+  },
+  {
+   "title": "Предновогодняя скидка 20% на кодирование от алкоголизма",
+   "text": "В предновогодний период получите скидку 20% на кодирование после обязательной консультации врача.",
+   "image": "/netcat_template/neoplus-clinic/uslugi/vshivanie-ampuly-ot-alkogolizma-2.webp"
+  }
+ ]
+}

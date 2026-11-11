@@ -1,0 +1,32 @@
+---
+import Base from "../layouts/Base.astro";
+import Faq from "../components/Faq.astro";
+import { faqGroups } from "../lib";
+
+const title = "Частые вопросы о наркологической помощи | Балашихинский наркологический центр Балашиха";
+const description =
+  "Ответы на частые вопросы о лечении алкоголизма и наркомании, кодировании, реабилитации и психиатрической помощи в Балашихинском наркологическом центре в Балашихе.";
+
+const allItems = faqGroups.flatMap((g) => g.items);
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: allItems.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+---
+
+<Base title={title} description={description} path="/faq/" breadcrumbs={[{ name: "FAQ" }]} jsonLd={[faqLd]}>
+  <section class="container-x py-10">
+    <h1 class="text-[28px] md:text-[40px]">Часто задаваемые вопросы</h1>
+    {faqGroups.map((g) => (
+      <div class="mt-10">
+        <h2 class="mb-5 text-[24px] md:text-[28px]">{g.group}</h2>
+        <Faq items={g.items} />
+      </div>
+    ))}
+  </section>
+</Base>

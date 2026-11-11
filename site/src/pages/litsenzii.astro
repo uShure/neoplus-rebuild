@@ -1,0 +1,48 @@
+---
+import Base from "../layouts/Base.astro";
+import { contacts } from "../lib";
+
+const title = "Лицензии Балашихинского наркологического центра";
+const description =
+  "Медицинские лицензии Балашихинского наркологического центра: Л041-01021-66/01009753 от 28.12.2023 и лицензия партнёрского стационара. Документы доступны по запросу.";
+---
+
+<Base title={title} description={description} path="/litsenzii/" breadcrumbs={[{ name: "Лицензии" }]}>
+  <section class="container-x py-10">
+    <h1 class="text-[28px] md:text-[40px]">Лицензии и документы</h1>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-2">
+      <div class="card p-6">
+        <h2 class="text-[18px]">Основная медицинская лицензия</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-ink-900/90">
+          {contacts.legal_entity} — лицензия на медицинскую деятельность<br />
+          <strong>№ {contacts.license_main.number}</strong> от {contacts.license_main.date}
+        </p>
+        <p class="mt-2 text-[14px] text-ink-600">{contacts.license_main.address}</p>
+      </div>
+      <div class="card p-6">
+        <h2 class="text-[18px]">Лицензия стационара (партнёр)</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-ink-900/90">
+          {contacts.license_stacionar_partner.entity} — лицензия на медицинскую деятельность<br />
+          <strong>№ {contacts.license_stacionar_partner.number}</strong> от {contacts.license_stacionar_partner.date}
+        </p>
+        <p class="mt-2 text-[14px] text-ink-600">{contacts.license_stacionar_partner.address}</p>
+      </div>
+    </div>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:max-w-2xl">
+      <img src="/img/licenses/licimage1.webp" alt="Лицензия на медицинскую деятельность, страница 1" width="600" height="848" class="w-full rounded-xl border border-line-200" loading="lazy" decoding="async" />
+      <img src="/img/licenses/licimage2.webp" alt="Лицензия на медицинскую деятельность, страница 2" width="600" height="848" class="w-full rounded-xl border border-line-200" loading="lazy" decoding="async" />
+    </div>
+
+    <div class="mt-8 card p-6">
+      <h2 class="text-[18px]">Нормативные документы</h2>
+      <ul class="mt-3 grid gap-2 text-[15px]">
+        <li><a class="text-brand-600 underline" href="/yuridicheskie-dokumenty/">Юридические документы</a></li>
+        <li><a class="text-brand-600 underline" href="/politika-v-otnoshenii-obrabotki-i-zaschity-personalnyh-dannyh/">Политика в отношении обработки персональных данных</a></li>
+        <li><a class="text-brand-600 underline" href="/soglasie-na-obrabotku-personalnyh-dannyh/">Согласие на обработку персональных данных</a></li>
+        <li><a class="text-brand-600 underline" href="/yuridicheskaya-informatsiya/">Юридическая информация</a></li>
+      </ul>
+    </div>
+  </section>
+</Base>

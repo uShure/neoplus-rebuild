@@ -1,0 +1,17 @@
+import { chromium } from "playwright";
+const b = await chromium.launch();
+const p = await b.newContext({ viewport: { width: 1360, height: 900 } }).then(c => c.newPage());
+p.on("pageerror", e => console.log("PAGEERROR:", String(e).slice(0,150)));
+await p.goto("http://localhost:4173/", { waitUntil: "networkidle" });
+await p.waitForTimeout(1500);
+await p.screenshot({ path: "/tmp/rollback-check/home.png" });
+await p.goto("http://localhost:4173/tseny/", { waitUntil: "networkidle" });
+await p.waitForTimeout(800);
+await p.evaluate(() => window.scrollTo(0, 600));
+await p.waitForTimeout(400);
+await p.screenshot({ path: "/tmp/rollback-check/tseny.png" });
+await p.goto("http://localhost:4173/personal/vasiliy-sergeevich-soykin.html/", { waitUntil: "networkidle" });
+await p.waitForTimeout(600);
+await p.screenshot({ path: "/tmp/rollback-check/doctor.png" });
+console.log("shots ok");
+await b.close();

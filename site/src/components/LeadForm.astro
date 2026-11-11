@@ -1,0 +1,104 @@
+---
+/**
+ * Форма записи. Шлёт на тот же эндпоинт, что и старый сайт (/send.php),
+ * с теми же скрытыми полями (catalogue=497, BitrixID=UC_6KMDMY, city=Балашиха…),
+ * чтобы серверная обработка заявок не изменилась.
+ */
+interface Props { source?: string; compact?: boolean; heading?: string }
+const { source = "page", compact = false, heading = "Записаться на приём" } = Astro.props;
+---
+
+<form
+  class="lead-form grid gap-3"
+  method="POST"
+  action="/send.php"
+  data-source={source}
+  novalidate
+>
+  <input type="hidden" name="catalogue" value="497" />
+  <input type="hidden" name="BitrixID" value="UC_6KMDMY" />
+  <input type="hidden" name="city" value="Балашиха" />
+  <input type="hidden" name="type" value="request" />
+  <input type="hidden" name="cc" value="5" />
+  <input type="hidden" name="sub" value="8" />
+  <input type="hidden" name="mes" value="160" />
+  <input type="hidden" name="urlMessage" value="" />
+  <input type="hidden" name="title_url_message" value={source} />
+
+  {heading && !compact && <p class="text-[15px] font-medium text-ink-600">Оставьте номер — перезвоним в течение нескольких минут. Анонимно.</p>}
+
+  <div>
+    <label class="mb-1 block text-[14px] font-medium" for={"phone-" + source}>Телефон</label>
+    <input
+      id={"phone-" + source}
+      class="w-full rounded-lg border border-line-200 px-4 py-3 text-[16px] focus:border-brand-600 focus:outline-2 focus:outline-brand-600/40"
+      type="tel"
+      name="params[phone][]"
+      placeholder="+7 (___) ___-__-__"
+      autocomplete="tel"
+      required
+      aria-required="true"
+      inputmode="tel"
+    />
+    <p class="mt-1 hidden text-[13px] text-danger-600" data-error="phone">Укажите корректный номер телефона</p>
+  </div>
+
+  <div>
+    <label class="mb-1 block text-[14px] font-medium" for={"name-" + source}>Имя <span class="text-ink-400">(необязательно)</span></label>
+    <input
+      id={"name-" + source}
+      class="w-full rounded-lg border border-line-200 px-4 py-3 text-[16px] focus:border-brand-600 focus:outline-2 focus:outline-brand-600/40"
+      type="text"
+      name="params[name][]"
+      autocomplete="name"
+    />
+  </div>
+
+  <label class="flex items-start gap-2.5 text-[13px] leading-snug text-ink-600">
+    <input type="checkbox" name="params[adConsent][]" class="mt-0.5 h-4 w-4 accent-[#1d5fa9]" required aria-required="true" />
+    <span>
+      Соглашаюсь с <a class="text-brand-600 underline" href="/politika-konfidentsialnosti/">политикой обработки персональных данных</a>
+      и <a class="text-brand-600 underline" href="/soglasie-na-obrabotku-personalnyh-dannyh/">условиями согласия</a> (152-ФЗ).
+    </span>
+  </label>
+
+  <button type="submit" class="btn-primary w-full">Отправить заявку</button>
+  <p class="text-center text-[12px] text-ink-400">Анонимно. Работаем круглосуточно.</p>
+  <p class="hidden rounded-lg bg-ok-600/10 p-3 text-center text-[14px] font-medium text-ok-600" data-success>
+    Заявка отправлена — перезвоним в ближайшие минуты.
+  </p>
+  <p class="hidden rounded-lg bg-danger-600/10 p-3 text-center text-[14px] text-danger-600" data-fail>
+    Не удалось отправить. Позвоните нам: +7 (800) 200-24-46
+  </p>
+</form>
+
+<script>
+  document.querySelectorAll("form.lead-form").forEach((form: HTMLFormElement) => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const phone = form.querySelector<HTMLInputElement>('input[name="params[phone][]"]');
+      const consent = form.querySelector<HTMLInputElement>('input[name="params[adConsent][]"]');
+      const err = form.querySelector("[data-error=phone]");
+      let valid = true;
+      const digits = phone?.value.replace(/\D/g, "") ?? "";
+      if (digits.length < 11) { err?.classList.remove("hidden"); valid = false; } else { err?.classList.add("hidden"); }
+      if (consent && !consent.checked) valid = false;
+      if (!valid) return;
+
+      const fd = new FormData(form);
+      // синхронизируем urlMessage с текущей страницей и выбранной услугой (если есть)
+      const ctx = window.__leadService || "";
+      fd.set("urlMessage", location.pathname + (ctx ? " | услуга: " + ctx : ""));
+      try {
+        const res = await fetch("/send.php", { method: "POST", body: fd });
+        if (!res.ok) throw new Error(String(res.status));
+        form.querySelector("[data-success]")?.classList.remove("hidden");
+        form.reset();
+        document.dispatchEvent(new CustomEvent("lead:done", { detail: { ok: true } }));
+      } catch {
+        form.querySelector("[data-fail]")?.classList.remove("hidden");
+        document.dispatchEvent(new CustomEvent("lead:done", { detail: { ok: false } }));
+      }
+    });
+  });
+</script>

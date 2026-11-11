@@ -1,0 +1,3 @@
+RewriteEngine On
+Redirect 301 /narkologicheskij-dispanser/ /narkologicheskiy-dispanser/
+Redirect 301 /reabilitatsiya-narkozavisimykh/ /reabilitatsiya-narkozavisimyh/

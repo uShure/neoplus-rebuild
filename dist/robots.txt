@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /*.css
+Allow: /*.js
+Allow: /*.webp
+Allow: /*.woff2
+Disallow: /yuridicheskaya-informatsiya/
+Disallow: /yuridicheskie-dokumenty/
+Disallow: /send.php
+Disallow: /*?*
+
+Sitemap: https://balashikha.neoplus-clinic.ru/sitemap.xml

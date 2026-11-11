@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+import PriceTable from "../components/PriceTable.astro";
+import LeadForm from "../components/LeadForm.astro";
+import { priceGroups } from "../lib";
+
+const title = "Цены на услуги Балашихинского наркологического центра";
+const description =
+  "Актуальный прайс Балашихинского наркологического центра: вывод из запоя, капельницы, кодирование, детоксикация, реабилитация и психиатрия. Скидка 10% при заказе через сайт.";
+
+const totalItems = priceGroups.reduce((n, g) => n + g.items.length, 0);
+---
+
+<Base title={title} description={description} path="/tseny/" breadcrumbs={[{ name: "Цены" }]}>
+  <section class="container-x py-10">
+    <h1 class="text-[28px] md:text-[40px]">Цены на услуги Балашихинского наркологического центра</h1>
+    <p class="mt-3 max-w-2xl text-[16px] text-ink-600">
+      {totalItems} услуг в четырёх разделах. Скидка 10% при заказе через форму на сайте.
+      Точную стоимость процедуры врач называет после консультации.
+    </p>
+
+    {priceGroups.map((g, gi) => (
+      <div class="mt-10">
+        <h2 class="mb-5 text-[24px] md:text-[28px]">{g.group}</h2>
+        <PriceTable rows={g.items.filter((r) => r.name)} id={"pg-" + gi} searchable />
+      </div>
+    ))}
+
+  </section>
+
+  <section id="zapis" class="bg-brand-800 py-12 text-white scroll-mt-24">
+    <div class="container-x grid items-center gap-8 lg:grid-cols-2">
+      <div>
+        <h2 class="text-[26px] md:text-[30px]">Не нашли услугу или нужна консультация?</h2>
+        <p class="mt-2 text-white/80">Позвоните или оставьте заявку — координатор подскажет стоимость и запишет к нужному специалисту.</p>
+      </div>
+      <div class="rounded-2xl bg-white p-6 text-ink-900">
+        <LeadForm source="tseny" compact heading="" />
+      </div>
+    </div>
+  </section>
+</Base>

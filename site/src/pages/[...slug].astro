@@ -1,0 +1,238 @@
+---
+import Base from "../layouts/Base.astro";
+import { services, BASE_URL, type ServicePage } from "../lib";
+import staticPages from "../data/static-pages.json";
+import legalPages from "../data/legal-pages.json";
+
+export function getStaticPaths() {
+  const GENERIC = ["photogallery", "geography", "kalkulyator", "narcologicheskaya-pomosch", "informatsiya-dlya-rodstvennikov"];
+  const generic = GENERIC.map((slug) => ({ params: { slug }, props: { kind: "static", slug } }));
+  const sitemapPage = [{ params: { slug: "karta-sayta" }, props: { kind: "sitemap" } }];
+  const legal = (legalPages as LegalPage[]).map((p) => ({
+    params: { slug: p.path },
+    props: { kind: "legal", page: p },
+  }));
+  return [...generic, ...sitemapPage, ...legal];
+}
+
+type StaticPage = (typeof staticPages)[number];
+type LegalPage = (typeof legalPages)[number];
+type LegalLink = { href: string; text: string };
+
+/** Вшить ссылки в текст блока на места их вхождений; невошедшие — в конец абзаца. */
+function richSegments(text: string, links: LegalLink[]) {
+  // дедуп: у старой страницы на один адрес бывало по две ссылки (пустая + текстовая);
+  // предпочитаем ссылку с чистой подписью (без "mailto:" внутри текста)
+  const byHref = new Map<string, LegalLink>();
+  const cleanLabel = (l: LegalLink) => !!l.text && !l.text.startsWith("mailto:");
+  for (const l of links) {
+    const prev = byHref.get(l.href);
+    if (!prev || (cleanLabel(l) && !cleanLabel(prev))) byHref.set(l.href, l);
+  }
+  const uniq = [...byHref.values()];
+  let segments: { t: string; link: LegalLink | null }[] = [{ t: text, link: null }];
+  const used = new Set<LegalLink>();
+  for (const l of uniq) {
+    if (!l.text) continue;
+    const idx = segments.findIndex((s) => !s.link && s.t.includes(l.text));
+    if (idx === -1) continue;
+    const s = segments[idx];
+    const i = s.t.indexOf(l.text);
+    segments.splice(
+      idx,
+      1,
+      { t: s.t.slice(0, i), link: null },
+      { t: l.text, link: l },
+      { t: s.t.slice(i + l.text.length), link: null }
+    );
+    used.add(l);
+  }
+  segments = segments.filter((s) => s.t);
+  const label = (l: LegalLink) =>
+    l.text && !l.text.startsWith("mailto:") ? l.text : l.href.replace("mailto:", "");
+  for (const l of uniq) {
+    if (!used.has(l)) segments.push({ t: label(l), link: l });
+  }
+  return segments;
+}
+const galleryImages = Object.fromEntries(
+  Object.entries(import.meta.glob<{ default: string }>("/public/img/gallery/*.webp", { eager: true, import: "default" })).map(
+    ([k, v]) => [k.replace("/public/img/gallery/", "/img/gallery/"), v]
+  )
+);
+
+const { kind, page } = Astro.props;
+const slug = Astro.params.slug ?? "";
+const sp = (staticPages as StaticPage[]).find((x) => x.path === slug);
+
+let title: string, description: string, h1: string;
+let crumbs: { name: string; href?: string }[] = [];
+
+if (kind === "legal" && page) {
+  title = page.title || page.h1 || "Документ";
+  description = page.description || `${page.h1} — Балашихинский наркологический центр`;
+  h1 = page.h1 || title;
+  crumbs = [{ name: h1 }];
+} else {
+  title = sp?.title || "Балашихинский наркологический центр";
+  description = sp?.description || "Балашихинский наркологический центр — анонимная помощь 24/7.";
+  h1 = sp?.h1 || title;
+  crumbs = [{ name: h1 }];
+}
+---
+
+<Base
+  title={title}
+  description={description}
+  path={"/" + slug + "/"}
+  breadcrumbs={crumbs}
+  robots={kind === "legal" ? "noindex, follow" : "index, follow"}
+>
+  {kind === "static" && sp && (
+    <section class="container-x py-10">
+      <h1 class="text-[28px] md:text-[40px]">{h1}</h1>
+      {slug === "photogallery" ? (
+        <div class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+          {Object.entries(galleryImages).map(([src, loaded], gi) => {
+            const name = src.split("/").pop()!.replace(".webp", "").replace(/-/g, " ");
+            const eager = gi < 4;
+            return (
+              <figure>
+                <button type="button" data-lightbox data-src={src} data-caption={"Фото клиники «Нео+»: " + name} class="block w-full cursor-zoom-in overflow-hidden rounded-xl" aria-label={"Открыть фото: " + name}>
+                  <img src={src} alt={"Фото Балашихинского наркологического центра: " + name} width="480" height="360" class="aspect-[4/3] w-full rounded-xl border border-line-200 object-cover transition-transform duration-200 hover:scale-[1.03]" loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"} decoding="async" />
+                </button>
+              </figure>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="mt-8 grid max-w-[820px] gap-8">
+          {sp.sections.map((sec) => (
+            <div>
+              {sec.heading && <h2 class="mb-4 text-[24px] md:text-[28px]">{sec.heading}</h2>}
+              <div class="grid gap-2">
+                {sec.items
+                  .filter((it) => !(it.tag === "h2" && it.text === sec.heading))
+                  .map((it) =>
+                    it.tag === "li" ? (
+                      <div class="flex gap-2.5 text-[16px] leading-relaxed text-ink-900/90">
+                        <svg class="mt-1.5 h-4 w-4 shrink-0 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                        <span>{it.text}</span>
+                      </div>
+                    ) : (
+                      <p class="text-[16px] leading-relaxed text-ink-900/90">{it.text}</p>
+                    )
+                  )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {slug === "geography" && (
+        <div class="mt-8">
+          <a href="/kontakty/" class="btn-primary">Уточнить выезд по вашему адресу</a>
+        </div>
+      )}
+    </section>
+  )}
+
+  {kind === "sitemap" && (
+    <section class="container-x py-10">
+      <h1 class="text-[28px] md:text-[40px]">Карта сайта</h1>
+      <div class="mt-8 grid gap-10 md:grid-cols-2">
+        <div>
+          <h2 class="mb-4 text-[22px]">Страницы клиники</h2>
+          <ul class="grid gap-1.5 text-[15px]">
+            {[
+              ["/", "Главная"],
+              ["/o-klinike-neoplus/", "О клинике"],
+              ["/tseny/", "Цены"],
+              ["/personal/", "Врачи"],
+              ["/aktsii/", "Акции"],
+              ["/otzyvy/", "Отзывы"],
+              ["/faq/", "FAQ"],
+              ["/litsenzii/", "Лицензии"],
+              ["/kontakty/", "Контакты"],
+              ["/photogallery/", "Фотогалерея"],
+              ["/geography/", "География выезда"],
+              ["/kalkulyator/", "Калькулятор"],
+              ["/narcologicheskaya-pomosch/", "Наркологическая помощь"],
+              ["/informatsiya-dlya-rodstvennikov/", "Информация для родственников"],
+            ].map(([href, label]) => (
+              <li><a class="text-brand-600 hover:underline" href={href}>{label}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 class="mb-4 text-[22px]">Услуги ({services.length})</h2>
+          <ul class="grid gap-1.5 text-[15px]">
+            {(services as ServicePage[]).map((s) => (
+              <li><a class="text-brand-600 hover:underline" href={"/" + s.path + "/"}>{s.h1}</a></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {kind === "legal" && page && (
+    <section class="container-x py-10">
+      <div class="mx-auto max-w-[820px]">
+        <h1 class="text-[26px] md:text-[34px]">{h1}</h1>
+        <div class="mt-8 grid gap-2">
+          {page.blocks.map((b) =>
+            b.tag === "li" && !b.links?.length ? (
+              <li class="ml-5 list-disc text-[15px] leading-relaxed text-ink-900/90">{b.text}</li>
+            ) : b.tag === "h2" || b.tag === "h3" ? (
+              <h2 class="mb-2 mt-6 text-[20px] font-bold">{b.text}</h2>
+            ) : b.links?.length ? (
+              <p class="text-[15px] leading-relaxed text-ink-900/90">
+                {richSegments(b.text, b.links).map((seg) =>
+                  seg.link ? (
+                    <a
+                      class="text-brand-600 underline hover:text-brand-700"
+                      href={seg.link.href}
+                      target={seg.link.href.startsWith("http") ? "_blank" : undefined}
+                      rel={seg.link.href.startsWith("http") ? "noopener" : undefined}
+                    >
+                      {seg.t}
+                    </a>
+                  ) : (
+                    <Fragment>{seg.t}</Fragment>
+                  )
+                )}
+              </p>
+            ) : (
+              <p class="text-[15px] leading-relaxed text-ink-900/90">{b.text}</p>
+            )
+          )}
+        </div>
+
+        {"documents" in page && page.documents && (
+          <div class="mt-12">
+            <h2 class="mb-5 text-[22px] font-bold">Документы клиники ({page.documents.length})</h2>
+            <p class="mb-5 text-[14px] text-ink-600">
+              Нажмите на документ — он откроется в новом окне. Все документы — оригинальные сканы ООО «НЕО ПЛЮС».
+            </p>
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {page.documents.map((d) => (
+                <a
+                  href={d.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="card flex items-center gap-3 p-4 transition-colors duration-150 hover:border-brand-600/50 hover:bg-brand-50/50"
+                >
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>
+                  </span>
+                  <span class="min-w-0 text-[14px] font-medium leading-snug text-ink-900">{d.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+</Base>

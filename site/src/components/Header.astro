@@ -1,0 +1,93 @@
+---
+import { PHONE_MAIN, PHONE_MAIN_TEL, telHref } from "../lib";
+
+const nav = [
+  { href: "/tseny/", label: "Цены" },
+  { href: "/personal/", label: "Врачи" },
+  { href: "/aktsii/", label: "Акции" },
+  { href: "/otzyvy/", label: "Отзывы" },
+  { href: "/faq/", label: "FAQ" },
+  { href: "/o-klinike-neoplus/", label: "О клинике" },
+  { href: "/kontakty/", label: "Контакты" },
+];
+const catalog = [
+  { href: "/lechenie-alkogolizma/", label: "Алкоголизм" },
+  { href: "/anonimnoe-lechenie-narkomanii/", label: "Наркомания" },
+  { href: "/kodirovanie-ot-alkogolizma/", label: "Кодирование" },
+  { href: "/psihiatricheskaya-klinika/", label: "Психиатрия" },
+  { href: "/reabilitatsionniy-center/", label: "Реабилитация" },
+  { href: "/konsultatsii/", label: "Консультации" },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-line-200 bg-white/95 backdrop-blur">
+  <div class="container-x flex h-16 items-center gap-4">
+    <a href="/" class="flex items-center gap-2" aria-label="Балашихинский наркологический центр — на главную">
+      <img src="/img/logo.svg" alt="Балашихинский наркологический центр — логотип" width="256" height="56" class="h-10 w-auto" />
+    </a>
+
+    <nav class="ml-4 hidden xl:block" aria-label="Основное меню">
+      <ul class="flex items-center gap-0.5">
+        <li class="group relative">
+          <button
+            class="flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-2 text-[14px] font-medium text-ink-900 hover:bg-brand-50"
+            aria-haspopup="true" aria-expanded="false">Каталог услуг
+            <svg class="h-4 w-4 text-ink-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="invisible absolute left-0 top-full z-50 w-64 rounded-xl border border-line-200 bg-white p-2 opacity-0 shadow-[0_8px_30px_rgb(16_24_40/0.12)] transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+            <ul>
+              {catalog.map((c) => (
+                <li>
+                  <a class="block rounded-lg px-3 py-2 text-[15px] text-ink-900 hover:bg-brand-50" href={c.href}>{c.label}</a>
+                </li>
+              ))}
+              <li class="mt-1 border-t border-line-200 pt-1">
+                <a class="block rounded-lg px-3 py-2 text-[15px] font-medium text-brand-600" href="/karta-sayta/">Все услуги →</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        {nav.map((n) => (
+          <li>
+            <a class="whitespace-nowrap rounded-lg px-2.5 py-2 text-[14px] font-medium text-ink-900 hover:bg-brand-50" href={n.href}>{n.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-3">
+      <a href={telHref(PHONE_MAIN)} class="hidden items-center gap-2 whitespace-nowrap text-[15px] font-semibold text-ink-900 hover:text-brand-600 md:flex">
+        <svg class="h-4 w-4 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        {PHONE_MAIN}
+      </a>
+      <a href="/kontakty/#zapis" class="btn-primary !px-4 !py-2 text-[15px]">Записаться</a>
+      <button id="burger" class="rounded-lg p-2 hover:bg-brand-50 lg:hidden" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- мобильное меню -->
+  <nav id="mobile-menu" class="hidden border-t border-line-200 bg-white lg:hidden" aria-label="Мобильное меню">
+    <ul class="container-x grid gap-1 py-3">
+      {catalog.map((c) => (
+        <li><a class="block rounded-lg px-3 py-2.5 font-medium" href={c.href}>{c.label}</a></li>
+      ))}
+      {nav.map((n) => (
+        <li><a class="block rounded-lg px-3 py-2.5 text-ink-600" href={n.href}>{n.label}</a></li>
+      ))}
+      <li class="mt-2 border-t border-line-200 pt-3">
+        <a href={telHref(PHONE_MAIN)} class="btn-secondary w-full">{PHONE_MAIN}</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const burger = document.getElementById("burger");
+  const menu = document.getElementById("mobile-menu");
+  burger?.addEventListener("click", () => {
+    const open = menu?.classList.toggle("hidden") === false;
+    burger.setAttribute("aria-expanded", String(open));
+  });
+</script>

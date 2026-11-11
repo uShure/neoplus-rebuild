@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+import { reviews } from "../lib";
+
+const title = "Отзывы о Балашихинском наркологическом центре";
+const description =
+  `${reviews.length} реальных отзывов пациентов и их близких о Балашихинском наркологическом центре: вывод из запоя, кодирование, реабилитация.`;
+
+// даты отзывов на старом сайте не публикуются — не выдумываем
+const shown = reviews;
+// проверяем, какие аватарки реально есть локально (на старом сайте часть битая)
+const localAvatars = new Set(
+  Object.keys(import.meta.glob("/public/img/reviews/*.webp", { eager: true })).map((k) =>
+    k.replace("/public/img/reviews/", "")
+  )
+);
+const avatarSrc = (url: string) => {
+  const name = url.split("/").pop()?.replace(".jpg", ".webp");
+  return name && localAvatars.has(name) ? "/img/reviews/" + name : null;
+};
+---
+
+<Base title={title} description={description} path="/otzyvy/" breadcrumbs={[{ name: "Отзывы" }]}>
+  <section class="container-x py-10">
+    <h1 class="text-[28px] md:text-[40px]">Отзывы о Балашихинском наркологическом центре</h1>
+    <p class="mt-3 max-w-2xl text-[16px] text-ink-600">
+      Отзывы собраны с профильной площадки «ПроДокторов» и переданы клиникой.
+    </p>
+    <div class="mt-8 columns-1 gap-4 md:columns-2 lg:columns-3 [&>figure]:mb-4">
+      {shown.map((r) => (
+        <figure class="card break-inside-avoid p-6">
+          <div class="flex items-center gap-3">
+            {r.avatar && avatarSrc(r.avatar) ? (
+              <img src={avatarSrc(r.avatar)!} alt="" width="48" height="48" class="h-12 w-12 rounded-full object-cover" loading="lazy" decoding="async" />
+            ) : (
+              <span class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-100 font-display text-[18px] font-bold text-brand-700" aria-hidden="true">{r.author?.[0] ?? "К"}</span>
+            )}
+            <div>
+              <figcaption class="font-semibold">{r.author}</figcaption>
+              {r.age && <p class="text-[13px] text-ink-600">{r.age}</p>}
+            </div>
+            <span class="ml-auto rounded-full bg-brand-50 px-3 py-1 text-[12px] text-brand-700">ПроДокторов</span>
+          </div>
+          <blockquote class="mt-4 text-[15px] leading-relaxed text-ink-900/90">{r.text}</blockquote>
+        </figure>
+      ))}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,21 @@
+---
+import Base from "../../layouts/Base.astro";
+import DoctorCard from "../../components/DoctorCard.astro";
+import { doctors } from "../../lib";
+
+const title = "Врачи Балашихинского наркологического центра";
+const description =
+  "Психиатры-наркологи, психотерапевты и анестезиологи Балашихинского наркологического центра: образование, специализация, запись на приём. Анонимно, 24/7.";
+---
+
+<Base title={title} description={description} path="/personal/" breadcrumbs={[{ name: "Врачи" }]}>
+  <section class="container-x py-10">
+    <h1 class="text-[28px] md:text-[40px]">Врачи Балашихинского наркологического центра</h1>
+    <p class="mt-3 max-w-2xl text-[16px] text-ink-600">
+      Все врачи имеют профильное образование и действующие сертификаты. Выезд на дом и приём в клинике — круглосуточно.
+    </p>
+    <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" data-stagger>
+      {doctors.map((d) => <DoctorCard doctor={d} />)}
+    </div>
+  </section>
+</Base>

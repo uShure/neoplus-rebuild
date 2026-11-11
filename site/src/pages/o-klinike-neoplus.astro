@@ -1,0 +1,85 @@
+---
+import Base from "../layouts/Base.astro";
+import DoctorCard from "../components/DoctorCard.astro";
+import Faq from "../components/Faq.astro";
+import { doctors, faqGroups } from "../lib";
+
+const title = "О Балашихинском наркологическом центре";
+const description =
+  "Балашихинский наркологический центр: европейские протоколы лечения зависимостей, анонимность, выезд 24/7, лицензированная медицина. О нас, условия пребывания, команда.";
+
+const aboutFaq = faqGroups[0]?.items.slice(0, 4) ?? [];
+---
+
+<Base title={title} description={description} path="/o-klinike-neoplus/" breadcrumbs={[{ name: "О клинике" }]}>
+  <section class="bg-brand-800 py-12 text-white">
+    <div class="container-x">
+      <h1 class="max-w-3xl text-[28px] leading-tight md:text-[40px]">
+        Балашихинский наркологический центр — лечение по европейским протоколам
+      </h1>
+      <p class="mt-4 max-w-2xl text-[16px] leading-relaxed text-white/80 md:text-[18px]">
+        Мы помогаем людям с зависимостями и их близким: экстренный вывод из запоя на дому,
+        стационарная детоксикация, кодирование, реабилитация и психиатрия. Анонимно, круглосуточно,
+        с уважением к пациенту.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-x py-12">
+    <div class="grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="text-[26px] md:text-[30px]">Как мы работаем</h2>
+        <div class="mt-4 grid gap-4 text-[15px] leading-relaxed text-ink-900/90">
+          <p>
+            Алгоритм ведения пациента: первичная консультация по телефону → приезд бригады или визит в клинику →
+            диагностика состояния → детоксикация и стабилизация → лечебная программа (медикаментозная поддержка,
+            психотерапия, реабилитация) → сопровождение после выписки.
+          </p>
+          <p>
+            Условия пребывания в стационаре: одноместные и двухместные палаты, круглосуточное наблюдение,
+            питание, работа психолога-аддиктолога. Стационарные услуги оказывает партнёрская организация по
+            собственной медицинской лицензии — детали уточняет координатор.
+          </p>
+          <p>
+            Все данные пациентов защищены: не сообщаем на работу, не ставим на учёт, не передаём информацию
+            третьим лицам (152-ФЗ).
+          </p>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-[26px] md:text-[30px]">Чем может помочь клиника</h2>
+        <ul class="mt-4 grid gap-2 text-[15px] text-ink-900/90">
+          {[
+            "Вывод из запоя и снятие интоксикации на дому или в стационаре",
+            "Кодирование современными методами (медикаментозное, психотерапевтическое)",
+            "Лечение наркомании: детоксикация, УБОД, снятие ломки",
+            "Реабилитация по программе «12 шагов» и терапевтическое сообщество",
+            "Психиатрия: депрессия, тревожные расстройства, психозы, нарушения сна",
+            "Консультации нарколога, психиатра, психотерапевта, аддиктолога",
+            "Помощь родственникам: мотивация на лечение, интервенция",
+          ].map((x) => (
+            <li class="flex gap-2.5">
+              <svg class="mt-1.5 h-4 w-4 shrink-0 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              {x}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-brand-50 py-12">
+    <div class="container-x">
+      <h2 class="mb-8 text-[26px] md:text-[30px]">Команда врачей</h2>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-4" data-stagger>
+        {doctors.slice(0, 4).map((d) => <DoctorCard doctor={d} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x py-12">
+    <div class="mx-auto max-w-3xl">
+      <Faq items={aboutFaq} heading="Частые вопросы о клинике" />
+    </div>
+  </section>
+</Base>

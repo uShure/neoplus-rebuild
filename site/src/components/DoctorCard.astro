@@ -1,0 +1,36 @@
+---
+import { img, type Doctor } from "../lib";
+
+interface Props { doctor: Doctor }
+const { doctor } = Astro.props;
+const photo = img(doctor.photo);
+const slug = doctor.url.replace("https://balashikha.neoplus-clinic.ru/personal/", "");
+const experience = doctor.profile?.experience?.find((x) => /лет|года|год/i.test(x));
+---
+
+<a
+  href={"/personal/" + slug}
+  class="card hover-lift group flex flex-col overflow-hidden"
+>
+  <div class="aspect-[4/5] overflow-hidden bg-brand-50">
+    {photo ? (
+      <img
+        src={photo}
+        alt={doctor.name + " — " + doctor.specialty}
+        width="480" height="600"
+        loading="lazy" decoding="async"
+        class="h-full w-full object-cover object-top"
+      />
+    ) : (
+      <div class="flex h-full items-center justify-center text-ink-400">Фото скоро добавим</div>
+    )}
+  </div>
+  <div class="flex flex-1 flex-col gap-1 p-4">
+    <h3 class="text-[17px] leading-snug">{doctor.name}</h3>
+    <p class="text-[14px] text-ink-600">{doctor.specialty}</p>
+    {experience && <p class="mt-1 text-[13px] text-accent-500">{experience}</p>}
+    <span class="mt-auto pt-3 text-[14px] font-semibold text-brand-600 group-hover:underline">
+      Записаться к врачу →
+    </span>
+  </div>
+</a>

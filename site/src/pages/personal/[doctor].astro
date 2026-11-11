@@ -1,0 +1,182 @@
+---
+import Base from "../../layouts/Base.astro";
+import LeadForm from "../../components/LeadForm.astro";
+import { doctors, img, BASE_URL, telHref, type Doctor } from "../../lib";
+
+export function getStaticPaths() {
+  return (doctors as Doctor[])
+    .filter((d) => d.profile)
+    .map((d) => ({
+      // сохраняем старый URL вида /personal/vasiliy-sergeevich-soykin.html
+      params: { doctor: d.url.replace("https://balashikha.neoplus-clinic.ru/personal/", "") },
+      props: { d },
+    }));
+}
+
+const { d } = Astro.props;
+const p = d.profile!;
+const photo = img(d.photo_page || d.photo);
+const slug = d.url.replace("https://balashikha.neoplus-clinic.ru/personal/", "");
+
+const physicianLd = {
+  "@context": "https://schema.org",
+  "@type": "Physician",
+  name: d.name,
+  description: d.specialty,
+  medicalSpecialty: "Addiction Medicine",
+  url: BASE_URL + "/personal/" + slug,
+  image: photo ? BASE_URL + photo : undefined,
+  worksFor: { "@type": "MedicalClinic", name: "Балашихинский наркологический центр" },
+};
+---
+
+<Base
+  title={p.h1 ? `${d.name} — ${d.specialty} | Балашихинский наркологический центр` : (d.name + " | Нео+")}
+  description={`${d.name} — ${d.specialty} Балашихинского наркологического центра. Образование, специализация, запись на приём: +7 (800) 200-24-46.`}
+  path={"/personal/" + slug}
+  breadcrumbs={[{ name: "Врачи", href: "/personal/" }, { name: d.name }]}
+  jsonLd={[physicianLd]}
+>
+  <section class="container-x py-10">
+    <div class="grid gap-10 lg:grid-cols-[320px_1fr_360px]">
+      <!-- фото -->
+      <div>
+        <div class="overflow-hidden rounded-2xl bg-brand-50">
+          {photo ? (
+            <img src={photo} alt={d.name} width="480" height="600" class="w-full object-cover object-top" loading="eager" decoding="async" />
+          ) : (
+            <div class="flex aspect-[4/5] items-center justify-center text-ink-400">Фото скоро добавим</div>
+          )}
+        </div>
+        {p.diploma_images && p.diploma_images.length > 0 && (
+          <div class="mt-4 grid grid-cols-3 gap-2">
+            {p.diploma_images.slice(0, 6).map((di) => {
+              const src = img(di);
+              return src ? (
+                <button
+                  type="button"
+                  data-lightbox
+                  data-src={src}
+                  data-caption={"Диплом/сертификат — " + d.name}
+                  class="cursor-zoom-in overflow-hidden rounded-lg border border-line-200 transition-transform duration-150 hover:scale-[1.03]"
+                  aria-label={"Увеличить документ — " + d.name}
+                >
+                  <img src={src} alt={"Диплом — " + d.name} width="160" height="120" class="w-full object-cover" loading="lazy" decoding="async" />
+                </button>
+              ) : null;
+            })}
+          </div>
+        )}
+      </div>
+
+      <!-- контент -->
+      <div>
+        <h1 class="text-[28px] md:text-[36px]">{d.name}</h1>
+        <p class="mt-2 text-[18px] text-brand-600">{d.specialty}</p>
+
+        {/* факты доверия: категория, стаж, ВУЗ */}
+        {(p.category || p.experience_years || p.university) && (
+          <div class="mt-4 flex flex-wrap gap-2">
+            {p.category && (
+              <span class="rounded-full bg-brand-50 px-3 py-1 text-[13px] font-medium text-brand-700">{p.category}</span>
+            )}
+            {p.experience_years && (
+              <span class="rounded-full bg-brand-50 px-3 py-1 text-[13px] font-medium text-brand-700">Стаж {p.experience_years}</span>
+            )}
+            {p.university && (
+              <span class="rounded-full bg-brand-50 px-3 py-1 text-[13px] font-medium text-brand-700">{p.university}</span>
+            )}
+          </div>
+        )}
+
+        {p.about && (
+          <section class="mt-8">
+            <h2 class="text-[22px]">О враче</h2>
+            <p class="mt-3 text-[15px] leading-relaxed text-ink-900/90">{p.about}</p>
+          </section>
+        )}
+
+        {(p.specialization_short?.length > 0 || p.specialization_detailed?.length > 0) && (
+          <section class="mt-8">
+            <h2 class="text-[22px]">Специализация</h2>
+            <ul class="mt-3 grid gap-1.5 text-[15px] text-ink-900/90">
+              {(p.specialization_short.length ? p.specialization_short : p.specialization_detailed).map((x) => (
+                <li class="flex gap-2.5">
+                  <svg class="mt-1 h-4 w-4 shrink-0 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                  {x}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {p.education?.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-[22px]">Образование</h2>
+            <ul class="mt-3 grid gap-2 text-[15px] leading-relaxed text-ink-900/90">
+              {p.education.map((x) => <li>{x}</li>)}
+            </ul>
+          </section>
+        )}
+
+        {p.experience?.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-[22px]">Опыт работы</h2>
+            <ul class="mt-3 grid gap-2 text-[15px] leading-relaxed text-ink-900/90">
+              {p.experience.map((x) => <li>{x}</li>)}
+            </ul>
+          </section>
+        )}
+
+        {p.schedule?.length > 0 && (
+          <section class="mt-8">
+            <h2 class="text-[22px]">Режим работы</h2>
+            <ul class="mt-3 grid gap-2 text-[15px] text-ink-900/90">
+              {p.schedule.map((x) => (
+                <li>
+                  {x.split(/(\+7[\s\d\-\(\)]{10,18})/).map((part, i) =>
+                    /^\+7[\s\d\-\(\)]{10,18}$/.test(part) ? (
+                      <a class="whitespace-nowrap font-medium text-brand-600" href={telHref(part)}>{part}</a>
+                    ) : (
+                      <Fragment>{part}</Fragment>
+                    )
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {p.qa?.length > 0 && (
+          <section class="mt-8">
+            <h2 class="mb-4 text-[22px]">Частые вопросы о приёме</h2>
+            <div class="grid gap-3">
+              {p.qa.map((item) => (
+                <details class="group rounded-xl border border-line-200 bg-white open:border-brand-600/40 open:bg-brand-50/40">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-medium [&::-webkit-details-marker]:hidden">
+                    <span class="text-[15px]">{item.q}</span>
+                    <svg class="h-5 w-5 shrink-0 text-brand-600 transition-transform duration-150 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                  </summary>
+                  {item.a && (
+                    <div class="faq-answer border-t border-line-200 px-5 py-4 text-[15px] leading-relaxed text-ink-600">
+                      {item.a}
+                    </div>
+                  )}
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <!-- форма -->
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="card p-6">
+          <h2 class="text-[20px]">Записаться к врачу</h2>
+          <p class="mb-4 mt-1 text-[14px] text-ink-600">Анонимно. Перезвоним за несколько минут.</p>
+          <LeadForm source={"doctor-" + slug} compact heading="" />
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>

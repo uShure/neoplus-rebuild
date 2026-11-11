@@ -1,0 +1,16 @@
+# Локальные артефакты сбора (не входят в репозиторий)
+/raw/
+/assets/
+/qa/
+/logs/
+*.log
+
+# Зависимости и кэши
+node_modules/
+site/node_modules/
+site/dist/
+.astro/
+site/.astro/
+
+# Служебное
+.DS_Store

@@ -1,0 +1,19 @@
+---
+interface Props { items: { q: string; a: string }[]; heading?: string }
+const { items, heading } = Astro.props;
+---
+
+{heading && <h2 class="mb-6 text-[28px]">{heading}</h2>}
+<div class="grid gap-3">
+  {items.map((item) => (
+    <details class="faq-item group rounded-xl border border-line-200 bg-white open:border-brand-600/40 open:bg-brand-50/40" data-reveal="scale">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-medium [&::-webkit-details-marker]:hidden">
+        <span class="text-[16px]">{item.q}</span>
+        <svg class="h-5 w-5 shrink-0 text-brand-600 transition-transform duration-150 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="faq-answer border-t border-line-200 px-5 py-4 text-[15px] leading-relaxed text-ink-600">
+        {item.a}
+      </div>
+    </details>
+  ))}
+</div>

@@ -1,0 +1,33 @@
+{
+ "yandex_metrika_id": "66047221",
+ "bitrix24_portal": "b3713987",
+ "bitrix24_call_tracker": "https://cdn-ru.bitrix24.ru/b3713987/crm/tag/call.tracker.js?27860243",
+ "form_endpoints": {
+  "main_lead": "/send.php",
+  "review_submit": "/add_otzyv.php",
+  "ajax_request": "/netcat_template/ajax/request.php",
+  "hash_check": "/netcat_template/ajax/hash-check.php"
+ },
+ "form_fields": [
+  "catalogue",
+  "BitrixID",
+  "city",
+  "type",
+  "cc",
+  "sub",
+  "mes",
+  "urlMessage",
+  "title_url_message",
+  "params[phone][]",
+  "params[adConsent][]"
+ ],
+ "consent_checkbox": "params[adConsent][]",
+ "other_scripts": [
+  "/send.js",
+  "/redisign/assets/js/request.js",
+  "/vefovi/ln.js",
+  "https://news.google.com/swg/js/v1/publisher.js",
+  "sourcebuster.min.js"
+ ],
+ "map": "google.com/maps link on contacts page"
+}
