@@ -11,6 +11,33 @@
 <link rel="canonical" href="https://balashikha.neoplus-clinic.ru/">
 <link rel="icon" href="/img/favicon.png" type="image/png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"MedicalClinic","name":"Балашихинский наркологический центр","alternateName":"Клиника Нео+","url":"https://balashikha.neoplus-clinic.ru/","logo":"https://balashikha.neoplus-clinic.ru/img/logo.png","image":"https://balashikha.neoplus-clinic.ru/img/og.webp","description":"Балашихинский наркологический центр: анонимная помощь 24/7 — вывод из запоя, кодирование, реабилитация, психиатрия.","telephone":"+7 (800) 200-24-46","email":"balashikha@neoplus-clinic.ru","address":{"@type":"PostalAddress","addressLocality":"Балашиха","streetAddress":"улица Советская, 47","addressCountry":"RU"},"medicalSpecialty":["Addiction Medicine","Psychiatry"],"priceRange":"₽₽","openingHoursSpecification":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"00:00","closes":"23:59"}}</script>
+<style>
+/* — Адаптивный хедер (замена рантайм-условий dc) — */
+.hdr-nav{display:flex;gap:0;white-space:nowrap;position:absolute;left:50%;transform:translateX(-50%)}
+.hdr-nav a{font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709;text-decoration:none}
+.hdr-nav a:hover{background:#f1f2f5}
+.hdr-phone{font-size:14px;font-weight:600;white-space:nowrap;padding:9px 16px;border:1px solid #bebecc;border-radius:100px;color:#070709;text-decoration:none}
+.hdr-cta{font-size:14px;font-weight:600;color:#fff;background:#070709;padding:10px 18px;border-radius:100px;white-space:nowrap;text-decoration:none;box-shadow:rgba(36,36,40,0.1) 0 1px 2px,rgba(36,36,40,0.09) 0 3px 3px,rgba(36,36,40,0.05) 0 6px 4px}
+.hdr-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:40px;padding:0 10px;background:none;border:1px solid #bebecc;border-radius:100px;cursor:pointer;flex-shrink:0}
+.hdr-burger span{display:block;height:2px;width:100%;background:#070709;border-radius:2px;transition:transform .25s ease,opacity .2s ease}
+.hdr-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hdr-burger.open span:nth-child(2){opacity:0}
+.hdr-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.hdr-panel{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid #e6e8ee;box-shadow:0 16px 32px rgba(7,7,9,.1);padding:8px 16px 14px;flex-direction:column}
+.hdr-panel.open{display:flex}
+.hdr-panel a{font-size:16px;font-weight:700;color:#070709;padding:13px 8px;border-bottom:1px solid #f2f3f6;text-decoration:none}
+.hdr-panel a:last-child{border-bottom:none;color:#1d5fa9}
+@media (max-width:1179px){
+  .hdr-nav{display:none}
+  .hdr-burger{display:flex}
+}
+@media (max-width:640px){
+  .hdr-phone{display:none}
+  .hdr-cta{padding:9px 14px;font-size:13px}
+  header > div:first-child{padding:10px 16px}
+  .hdr-panel{padding:6px 16px 12px}
+}
+</style>
 </head>
 <body>
 <x-dc>
@@ -28,40 +55,31 @@ input:focus{outline:none}
 </style>
 </helmet>
 
-<header ref="{{ headerRef }}" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.82);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid rgba(220,224,232,1);transition:background .35s ease, box-shadow .35s ease, border-color .35s ease">
+<header style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.82);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid rgba(220,224,232,1)">
   <div style="position:relative;max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:12px">
-    <a href="#top" style="display:flex;align-items:center;gap:10px;flex-shrink:0"><img src="img/logo.svg" alt="Нео+" style="height:30px;display:block"></a>
-    <div style="flex:1;min-width:0"></div>
-    <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
-      <nav style="display:flex;gap:0;flex-wrap:nowrap;white-space:nowrap;position:absolute;left:50%;transform:translateX(-50%)">
-        <a href="#help" style="font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709">Услуги</a>
-        <a href="https://ushure.github.io/tseny/" style="font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709">Цены</a>
-        <a href="#doctors" style="font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709">Врачи</a>
-        <a href="https://ushure.github.io/otzyvy/" style="font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709">Отзывы</a>
-        <a href="#faq" style="font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709">Вопросы</a>
-        <a href="https://ushure.github.io/o-klinike-neoplus/" style="font-size:15px;font-weight:700;padding:8px 10px;border-radius:100px;color:#070709">О клинике</a>
-      </nav>
-    </sc-if>
-    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
-      <a href="tel:+78002002446" style="font-size:14px;font-weight:600;white-space:nowrap;padding:9px 16px;border:1px solid #bebecc;border-radius:100px">+7 (800) 200-24-46</a>
-    </sc-if>
-    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-      <a href="tel:+78002002446" style="font-size:14px;font-weight:700;white-space:nowrap;padding:9px 4px">+7 (800) 200-24-46</a>
-    </sc-if>
-    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
-    <a href="#form" style="font-size:14px;font-weight:600;color:#fff;background:#070709;padding:10px 18px;border-radius:100px;white-space:nowrap;box-shadow:rgba(36,36,40,0.1) 0 1px 2px,rgba(36,36,40,0.09) 0 3px 3px,rgba(36,36,40,0.05) 0 6px 4px">Записаться</a>
-    </sc-if>
-  </div>
-  <sc-if value="{{ showRow }}" hint-placeholder-val="{{ false }}">
-    <nav style="display:flex;gap:6px;overflow-x:auto;white-space:nowrap;padding:0 24px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch">
-      <a href="#help" style="flex-shrink:0;font-size:15px;font-weight:700;padding:8px 14px;border-radius:100px;background:#f5f5f5;color:#070709">Услуги</a>
-      <a href="https://ushure.github.io/tseny/" style="flex-shrink:0;font-size:15px;font-weight:700;padding:8px 14px;border-radius:100px;background:#f5f5f5;color:#070709">Цены</a>
-      <a href="#doctors" style="flex-shrink:0;font-size:15px;font-weight:700;padding:8px 14px;border-radius:100px;background:#f5f5f5;color:#070709">Врачи</a>
-      <a href="https://ushure.github.io/otzyvy/" style="flex-shrink:0;font-size:15px;font-weight:700;padding:8px 14px;border-radius:100px;background:#f5f5f5;color:#070709">Отзывы</a>
-      <a href="#faq" style="flex-shrink:0;font-size:15px;font-weight:700;padding:8px 14px;border-radius:100px;background:#f5f5f5;color:#070709">Вопросы</a>
-      <a href="https://ushure.github.io/o-klinike-neoplus/" style="flex-shrink:0;font-size:15px;font-weight:700;padding:8px 14px;border-radius:100px;background:#f5f5f5;color:#070709">О клинике</a>
+    <a href="#top" style="display:flex;align-items:center;gap:10px;flex-shrink:0"><img src="img/logo.svg" alt="Балашихинский наркологический центр" style="height:30px;display:block"></a>
+    <nav class="hdr-nav" aria-label="Основное меню">
+      <a href="#help">Услуги</a>
+      <a href="/tseny/">Цены</a>
+      <a href="#doctors">Врачи</a>
+      <a href="/otzyvy/">Отзывы</a>
+      <a href="#faq">Вопросы</a>
+      <a href="/o-klinike-neoplus/">О клинике</a>
     </nav>
-  </sc-if>
+    <div style="flex:1"></div>
+    <a class="hdr-phone" href="tel:+78002002446">+7 (800) 200-24-46</a>
+    <a class="hdr-cta" href="#form">Записаться</a>
+    <button class="hdr-burger" type="button" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="hdr-panel" aria-label="Мобильное меню">
+    <a href="#help">Услуги</a>
+    <a href="/tseny/">Цены</a>
+    <a href="#doctors">Врачи</a>
+    <a href="/otzyvy/">Отзывы</a>
+    <a href="#faq">Вопросы</a>
+    <a href="/o-klinike-neoplus/">О клинике</a>
+    <a class="hdr-panel-phone" href="tel:+78002002446">+7 (800) 200-24-46</a>
+  </nav>
 </header>
 
 <section id="top" data-screen-label="Hero" style="position:relative;overflow:hidden;background:linear-gradient(180deg,#6f93bb 0%,#86aed0 55%,#8fb5d4 70%,#c9dbec 86%,#ffffff 100%);padding:{{ heroTop }} 24px clamp(120px,14vw,180px)">
@@ -538,6 +556,28 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+(function(){
+  function set(b, p, o){
+    p.classList.toggle('open', o);
+    b.classList.toggle('open', o);
+    b.setAttribute('aria-expanded', o ? 'true' : 'false');
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('.hdr-burger');
+    var p = document.querySelector('.hdr-panel');
+    if (!p) return;
+    var bb = document.querySelector('.hdr-burger');
+    if (b) { e.preventDefault(); e.stopPropagation(); set(bb, p, !p.classList.contains('open')); return; }
+    if (p.contains(e.target) && e.target.closest('a')) { set(bb, p, false); return; }
+    if (!p.contains(e.target)) set(bb, p, false);
+  }, true);
+  document.addEventListener('keydown', function(e){
+    var p = document.querySelector('.hdr-panel');
+    if (e.key === 'Escape' && p && p.classList.contains('open')) set(document.querySelector('.hdr-burger'), p, false);
+  });
+})();
 </script>
 </body>
 </html>
